@@ -116,12 +116,7 @@ def load_data(choice):
 
 
 def show_screen(screen):
-    frames=(start_screen,quiz_screen,fact_screen,result_screen)
-    i=0
-    while i<len(frames):
-        frames[i].grid_remove()
-        i+=1
-    screen.grid(row=0,column=0,sticky='nsew')
+    screen.tkraise()
 
 
 def update_score():
