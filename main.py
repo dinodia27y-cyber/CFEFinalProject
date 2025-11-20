@@ -55,7 +55,7 @@ FLAG_IMAGES={
 'South Africa':'data/standard/ZA.png',
 'Cuba':'data/advanced/CU.png',
 'New Zealand':'data/advanced/NZ.png',
-'Nepal':'data/advanced/NE.png',
+'Niger':'data/advanced/NE.png',
 'Greece':'data/advanced/GR.png',
 'Iraq':'data/advanced/IQ.png',
 'Bangladesh':'data/advanced/BD.png',
