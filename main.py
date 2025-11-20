@@ -26,7 +26,7 @@ FACT_FILES={
 'South Africa':'facts/ZA.txt',
 'Cuba':'facts/CU.txt',
 'New Zealand':'facts/NZ.txt',
-'Nepal':'facts/NE.txt',
+'Niger':'facts/NE.txt',
 'Greece':'facts/GR.txt',
 'Iraq':'',
 'Bangladesh':'facts/BD.txt',
@@ -70,7 +70,7 @@ FLAG_IMAGES={
 
 EASY=['United States','Japan','United Kingdom','Mexico','Canada','India','France']
 STANDARD=['Turkey','China','Saudi Arabia','Argentina','Belgium','South Africa']
-ADVANCED=['Cuba','New Zealand','Nepal','Greece','Iraq','Bangladesh','Hong Kong']
+ADVANCED=['Cuba','New Zealand','Niger','Greece','Iraq','Bangladesh','Hong Kong']
 EXPERT=['Angola','Bahamas','Montenegro','United Arab Emirates','Jordan','Nicaragua']
 MODE_GROUPS={
 'all':EASY+STANDARD+ADVANCED+EXPERT,
