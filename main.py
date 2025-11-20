@@ -7,7 +7,7 @@ question_queue=[]
 question_index=0
 total_questions=10
 current_question=None
-mode_choice='all'
+mode_choice='mix up'
 image_cache={}
 
 FACT_FILES={
@@ -73,7 +73,7 @@ STANDARD=['Turkey','China','Saudi Arabia','Argentina','Belgium','South Africa']
 ADVANCED=['Cuba','New Zealand','Niger','Greece','Iraq','Bangladesh','Hong Kong']
 EXPERT=['Angola','Bahamas','Montenegro','United Arab Emirates','Jordan','Nicaragua']
 MODE_GROUPS={
-'all':EASY+STANDARD+ADVANCED+EXPERT,
+'mix up':EASY+STANDARD+ADVANCED+EXPERT,
 'easy':EASY,
 'standard':STANDARD,
 'advanced':ADVANCED,
@@ -97,7 +97,7 @@ def load_data(choice):
     if choice in MODE_GROUPS:
         base=MODE_GROUPS[choice]
     else:
-        base=MODE_GROUPS['all']
+        base=MODE_GROUPS['mix up']
     countries=[]
     i=0
     while i<len(base):
@@ -165,7 +165,7 @@ def start_game():
     if mode_choice in MODE_GROUPS:
         choice=mode_choice
     else:
-        choice='all'
+        choice='mix up'
     load_data(choice)
     score=0
     question_index=0
@@ -271,10 +271,10 @@ def build_window():
     names=tk.Label(start_screen,text='Group: Hudson McEntire, Yuval Dinodia, Aarush Yelimeli')
     names.pack(pady=10)
 
-    mode_label=tk.Label(start_screen,text='Type Mode (all, easy, standard, advanced, expert)')
+    mode_label=tk.Label(start_screen,text='Type Mode (mix up, easy, standard, advanced, expert)')
     mode_label.pack()
     mode_entry=tk.Entry(start_screen,width=20)
-    mode_entry.insert(0,'all')
+    mode_entry.insert(0,'mix up')
     mode_entry.pack(pady=6)
 
     picture_label=tk.Label(quiz_screen,text='[flag image here]')
@@ -313,7 +313,7 @@ def build_window():
         if entry_text in MODE_GROUPS:
             mode_choice=entry_text
         else:
-            mode_choice='all'
+            mode_choice='mix up'
         start_game()
 
     tk.Button(start_screen,text='Start',width=20,command=set_mode_and_start).pack(pady=12)
