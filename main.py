@@ -10,6 +10,7 @@ current_question=None
 mode_choice='mix up'
 current_mode='mix up'
 image_cache={}
+resource_base='.'
 
 FACT_FILES={
 'United States':'facts/US.txt',
@@ -81,12 +82,23 @@ MODE_GROUPS={
 'expert':EXPERT
 }
 
-
+def resolve_resource(path):
+    if not path:
+        return ''
+    if path.startswith(('/', '\\')) or (len(path)>1 and path[1]==':'):
+        return path
+    base=resource_base.rstrip('/\\')
+    if base in ('', '.'):
+        return path
+    return base+'/'+path
 
 
 def read_fact(path):
+    if not path:
+        return ''
+    file_path=resolve_resource(path)
     try:
-        with open(path,'r') as file:
+        with open(file_path,'r') as file:
             data=file.read().strip()
     except Exception:
         data=''
@@ -167,7 +179,7 @@ def finish_game():
 
 
 def start_game():
-    global score,question_index,current_question,question_queue,mode_choice,current_mode
+    global score,question_index,current_question,question_queue,mode_choice,current_mode,image_cache
     if mode_choice in MODE_GROUPS:
         choice=mode_choice
     else:
@@ -177,6 +189,7 @@ def start_game():
     score=0
     question_index=0
     current_question=None
+    image_cache={}
     sample=min(total_questions,len(countries))
     if sample>0:
         question_queue=random.sample(countries,sample)
@@ -194,8 +207,15 @@ def show_flag_picture(name):
         picture_label.config(image='',text='[flag image here]')
         picture_label.image=None
         return
+    image_path=resolve_resource(path)
     if name not in image_cache:
-        image_cache[name]=tk.PhotoImage(file=path,master=window)
+        try:
+            image_cache[name]=tk.PhotoImage(file=str(image_path),master=window)
+        except tk.TclError as error:
+            print(f'Error loading flag for {name}: {error}')
+            picture_label.config(image='',text='[flag image unavailable]')
+            picture_label.image=None
+            return
     photo=image_cache[name]
     picture_label.config(image=photo,text='')
     picture_label.image=photo
@@ -298,6 +318,13 @@ def build_window():
     names=tk.Label(start_screen,text='Group: Hudson McEntire, Yuval Dinodia, Aarush Yelimeli')
     names.pack(pady=10)
 
+    platform_var=tk.StringVar(value='mac')
+    tk.Label(start_screen,text='Select your platform').pack()
+    platform_frame=tk.Frame(start_screen)
+    platform_frame.pack(pady=6)
+    tk.Radiobutton(platform_frame,text='Mac',variable=platform_var,value='mac').pack(side='left',padx=6)
+    tk.Radiobutton(platform_frame,text='Windows',variable=platform_var,value='windows').pack(side='left',padx=6)
+
     mode_label=tk.Label(start_screen,text='Type Mode (mix up, easy, standard, advanced, expert)')
     mode_label.pack()
     mode_entry=tk.Entry(start_screen,width=20)
@@ -337,12 +364,16 @@ def build_window():
     tk.Button(result_screen,text='Play Again',command=go_home).pack(pady=8)
 
     def set_mode_and_start():
-        global mode_choice
+        global mode_choice,resource_base
         entry_text=mode_entry.get().strip().lower()
         if entry_text in MODE_GROUPS:
             mode_choice=entry_text
         else:
             mode_choice='mix up'
+        platform_choice=platform_var.get()
+        base_dir='.'
+        platform_specific=base_dir+'/'+platform_choice
+        resource_base=platform_specific
         start_game()
 
     tk.Button(start_screen,text='Start',width=20,command=set_mode_and_start).pack(pady=12)
