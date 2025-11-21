@@ -210,7 +210,7 @@ def show_flag_picture(name):
         try:
             image_cache[name]=tk.PhotoImage(file=str(image_path),master=window)
         except tk.TclError as error:
-            print(f'Error loading flag for {name}: {error}')
+            print('Error loading flag for '+str(name)+': '+str(error))
             picture_label.config(image='',text='[flag image unavailable]')
             picture_label.image=None
             return
@@ -316,13 +316,6 @@ def build_window():
     names=tk.Label(start_screen,text='Group: Hudson McEntire, Yuval Dinodia, Aarush Yelimeli')
     names.pack(pady=10)
 
-    platform_var=tk.StringVar(value='mac')
-    tk.Label(start_screen,text='Select your platform').pack()
-    platform_frame=tk.Frame(start_screen)
-    platform_frame.pack(pady=6)
-    tk.Radiobutton(platform_frame,text='Mac',variable=platform_var,value='mac').pack(side='left',padx=6)
-    tk.Radiobutton(platform_frame,text='Windows',variable=platform_var,value='windows').pack(side='left',padx=6)
-
     mode_label=tk.Label(start_screen,text='Type Mode (mix up, easy, standard, advanced, expert)')
     mode_label.pack()
     mode_entry=tk.Entry(start_screen,width=20)
@@ -368,7 +361,6 @@ def build_window():
             mode_choice=entry_text
         else:
             mode_choice='mix up'
-        platform_choice=platform_var.get()
         start_game()
 
     tk.Button(start_screen,text='Start',width=20,command=set_mode_and_start).pack(pady=12)
