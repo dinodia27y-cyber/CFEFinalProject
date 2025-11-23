@@ -1,6 +1,7 @@
 import tkinter as tk
 import random
 import os
+import sys
 
 countries=[]
 score=0
@@ -11,11 +12,37 @@ current_question=None
 mode_choice='mix up'
 current_mode='mix up'
 image_cache={}
-# find folder where this file lives so paths work everywhere
-try:
-    resource_base=os.path.dirname(os.path.abspath(__file__))
-except Exception:
-    resource_base=os.getcwd()
+
+
+def find_base_folder():
+    spots=[]
+    try:
+        spots.append(os.path.dirname(os.path.abspath(__file__)))
+    except Exception:
+        pass
+    spots.append(os.getcwd())
+    if hasattr(sys,'_MEIPASS'):
+        spots.append(sys._MEIPASS)
+    if getattr(sys,'executable',None):
+        spots.append(os.path.dirname(sys.executable))
+    good=None
+    i=0
+    while i<len(spots):
+        place=spots[i]
+        if place and os.path.exists(os.path.join(place,'data')) and os.path.exists(os.path.join(place,'facts')):
+            good=place
+            break
+        i+=1
+    if not good:
+        if spots and spots[0]:
+            good=spots[0]
+        else:
+            good=os.getcwd()
+    return good
+
+
+# pick a folder that actually has the data/facts
+resource_base=find_base_folder()
 print('looking for data in '+str(resource_base))
 
 FACT_FILES={
