@@ -1,6 +1,5 @@
 import random
 import tkinter as tk
-from tkinter import *
 
 
 countries = []
@@ -12,6 +11,16 @@ current_question = None
 current_mode = 'mix up'
 image_cache = {}
 MAX_OPTIONS = 4
+
+
+def pick_unique(items, count):
+    pool = list(items)
+    chosen = []
+    while pool and len(chosen) < count:
+        selection = random.choice(pool)
+        chosen.append(selection)
+        pool.remove(selection)
+    return chosen
 
 
 FACT_FILES = {
@@ -89,7 +98,7 @@ MODE_GROUPS = {
 
 
 def read_fact(path):
-    with open(path, 'r', encoding='utf-8') as file:
+    with open(path, 'r') as file:
         return file.read().strip()
 
 
@@ -129,14 +138,19 @@ def handle_answer(answer):
     current_question = None
 
 
+def make_answer_handler(value):
+    def handler():
+        handle_answer(value)
+    return handler
+
+
 def go_back_to_quiz():
     show_screen(quiz_screen)
     ask_question()
 
 
 def finish_game():
-    total = len(question_queue)
-    result_label.config(text='Final Score: ' + str(score) + '/' + str(total))
+    result_label.config(text='Final Score: ' + str(score) + '/' + str(len(question_queue)))
     show_screen(result_screen)
 
 
@@ -148,15 +162,13 @@ def start_game():
     question_index = 0
     current_question = None
     image_cache = {}
-    question_queue = random.sample(countries, min(total_questions, len(countries)))
+    question_queue = pick_unique(countries, min(total_questions, len(countries)))
 
     if not question_queue:
-        messagebox.showerror('No Questions', 'No questions available for this mode.')
         show_screen(start_screen)
         return
 
     score_label.config(text='Score: 0')
-    question_label.config(text='Question 0')
     show_screen(quiz_screen)
     ask_question()
 
@@ -166,7 +178,7 @@ def show_flag_picture(name):
         image_cache[name] = tk.PhotoImage(file=FLAG_IMAGES[name], master=window)
 
     photo = image_cache[name]
-    picture_label.config(image=photo, text='')
+    picture_label.config(image=photo)
     picture_label.image = photo
 
 
@@ -177,9 +189,10 @@ def show_fact_screen(text):
 
 def build_options(correct_country):
     pool = [entry['country'] for entry in countries if entry['country'] != correct_country]
-    distractors = random.sample(pool, k=min(MAX_OPTIONS - 1, len(pool)))
-    options = [correct_country] + distractors
-    random.shuffle(options)
+    distractors = pick_unique(pool, min(MAX_OPTIONS - 1, len(pool)))
+    options = distractors
+    insert_at = random.choice(range(len(options) + 1))
+    options.insert(insert_at, correct_country)
     return options
 
 
@@ -194,8 +207,8 @@ def ask_question():
     question_label.config(text='Question ' + str(question_index + 1) + '/' + str(len(question_queue)))
 
     if current_mode in ('advanced', 'expert'):
-        for btn in option_buttons:
-            btn.pack_forget()
+        for button in option_buttons:
+            button.pack_forget()
         answer_entry.delete(0, tk.END)
         answer_entry.pack(pady=5)
         submit_button.pack(pady=5)
@@ -203,11 +216,14 @@ def ask_question():
         answer_entry.pack_forget()
         submit_button.pack_forget()
         options = build_options(current_question['country'])
-        for btn, name in zip(option_buttons, options):
-            btn.config(text=name, state='normal', command=lambda value=name: handle_answer(value))
-            btn.pack(pady=5)
-        for btn in option_buttons[len(options):]:
-            btn.pack_forget()
+        for idx in range(len(option_buttons)):
+            if idx < len(options):
+                name = options[idx]
+                button = option_buttons[idx]
+                button.config(text=name, state='normal', command=make_answer_handler(name))
+                button.pack(pady=5)
+            else:
+                option_buttons[idx].pack_forget()
 
     show_flag_picture(current_question['country'])
 
