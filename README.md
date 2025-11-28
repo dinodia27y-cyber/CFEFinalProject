@@ -5,15 +5,11 @@ Flag-Find Frenzy is a desktop quiz built with Tkinter. Pick a difficulty mode, v
 ## Requirements
 
 - Python 3.9+
-- Tkinter (ships with most Python installations)
+- Tkinter
 
 ## Usage
 
-From the project folder:
-
-```bash
-python3 main.py
-```
+From the project folder
 
 1. Type the mode you want (`all`, `easy`, `standard`, `advanced`, `expert`) on the start screen.
 2. Press **Start** to begin the quiz.
@@ -25,4 +21,4 @@ All flag images live under `data/`, and the matching facts live under `facts/` (
 ## Credits
 
 - Flag icons sourced from [https://github.com/emcrisostomo/flags](https://github.com/emcrisostomo/flags).
-- App created by the Flag-Find Frenzy team.
+-Can be found in credits foulder
